@@ -1,0 +1,74 @@
+jenkins:
+  remotingSecurity:
+    enabled: true
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        # create a user called admin
+        # - id: "admin"
+        #   name: "admin"
+        #   password: "admin"
+        - id: "chocolateen"
+          name: "Hugo"
+          password: ${USER_CHOCOLATEEN_PASSWORD}
+        - id: "vaugie_g"
+          name: "Garance"
+          password: ${USER_VAUGIE_G_PASSWORD}
+        - id: "i_dont_know"
+          name: "Jeremy"
+          password: ${USER_I_DONT_KNOW_PASSWORD}
+        - id: "nasso"
+          name: "Nassim"
+          password: ${USER_NASSO_PASSWORD}
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+        - assignments:
+          - "chocolateen"
+          # - "admin"
+          name: "admin"
+          pattern: ".*"
+          permissions:
+          - "Overall/Administer"
+          description: "Marvin master"
+        - assignments:
+          - "i_dont_know"
+          name: "ape"
+          pattern: ".*"
+          permissions:
+          - "Job/Build"
+          - "Job/Workspace"
+          - "Job/Read"
+          - "Overall/Read"
+          description: "Pedagogical team member"
+        - assignments:
+          - "vaugie_g"
+          name: "gorilla"
+          pattern: ".*"
+          permissions:
+          - "Job/Cancel"
+          - "Job/Read"
+          - "Job/Move"
+          - "Job/Build"
+          - "Job/Delete"
+          - "Job/Create"
+          - "Job/Configure"
+          - "Job/Workspace"
+          - "Overall/Read"
+          description: "Group Obsessively Researching Innovation Linked to Learning and Accomplishment"
+        - assignments:
+          - "nasso"
+          name: "assist"
+          pattern: ".*"
+          permissions:
+          - "Job/Read"
+          - "Job/Workspace"
+          - "Overall/Read"
+          description: "Assistant"
+  numExecutors: 1
+  slaveAgentPort: 50000
+  systemMessage: "Welcome to the Chocolatine-Powered Marvin Jenkins Instance."
+jobs:
+  - file: /usr/local/job_dsl.groovy

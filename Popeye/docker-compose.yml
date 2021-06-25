@@ -1,0 +1,89 @@
+version: '3'
+services:
+
+  poll:
+    build:
+      context: ./poll/
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - REDIS_URL=redis://cache
+    ports:
+      - 5000:80
+    networks:
+      - poll-tier
+    depends_on:
+      - redis
+
+  db:
+    image: postgres
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=popeye
+      - POSTGRES_ROOT_PASSWORD=popeye
+    networks:
+      - result-tier
+      - back-tier
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  result:
+    build:
+      context: ./result
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 5001:80
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: popeye
+      POSTGRES_DB: popeye
+    depends_on:
+      - db
+    networks:
+      - result-tier
+
+  redis:
+    image: redis:alpine
+    container_name: cache
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    restart: always
+    networks:
+      - poll-tier
+      - back-tier
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - REDIS_URL=redis://cache
+      - DB_USER=postgres
+      - DB_PASSWORD=banquise
+      - POSTGRES_DB=popeye
+      - POSTGRES_PORT=5432
+    depends_on:
+      - db
+      - redis
+    networks:
+      - back-tier
+
+networks:
+  result-tier:
+  poll-tier:
+  back-tier:
+
+volumes:
+  db-data:
+    driver: local

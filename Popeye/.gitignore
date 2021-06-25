@@ -1,0 +1,7 @@
+
+worker/.classpath
+worker/.project
+worker/.settings/org.eclipse.jdt.apt.core.prefs
+worker/.settings/org.eclipse.jdt.core.prefs
+worker/.settings/org.eclipse.m2e.core.prefs
+worker/target/classes/worker/Worker.class

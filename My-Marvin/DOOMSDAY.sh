@@ -1,0 +1,1 @@
+docker stop t-dop-600-par-6-1-mymarvin-antoinebublex_jenkins ; docker rm t-dop-600-par-6-1-mymarvin-antoinebublex_jenkins; docker volume prune ;  docker image prune -a ;  docker system prune -a ; rm .\jenkins_home\

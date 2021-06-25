@@ -1,0 +1,16 @@
+version: '3'
+services:
+  jenkins:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+      - 50000:50000
+    container_name: jenkins_bootstrap
+    volumes:
+      - ./jenkins_home:/var/jenkins_home
+volumes:
+  jenkins_home:
+    driver: local

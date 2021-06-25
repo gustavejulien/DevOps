@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: default
+  labels:
+    app: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: worker
+        image: epitechcontent/t-dop-600-worker:k8s
+        resources:
+          limits:
+            memory: "256M"
+        envFrom:
+          - configMapRef:
+              name: postgres-configmap
+          - configMapRef:
+              name: redis-configmap
+          - secretRef:
+              name: postgres-secret
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values: 
+            - epitech-s4qe
+            - epitech-s4ql
+          topologyKey: "kubernetes.io/hostname"
+data:
+  - REDIS_HOST: redis-configmap
+  - POSTGRES_HOST: postgres-configmap
+  - POSTGRES_PORT: postgres-configmap
+  - POSTGRES_DB: postgres-configmap
+  - POSTGRES_USER: postgres-secret
+  - POSTGRES_PASSWORD: postgres-secret
